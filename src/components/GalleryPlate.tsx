@@ -4,8 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
-  useScroll,
-  useTransform,
 } from "motion/react";
 import type { GalleryItem } from "@/data/gallery";
 
@@ -24,7 +22,6 @@ export function GalleryPlate({
   priority = false,
   isFirst = false,
 }: GalleryPlateProps) {
-  const frameRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
@@ -36,13 +33,6 @@ export function GalleryPlate({
     mediaQuery.addEventListener("change", updatePreference);
     return () => mediaQuery.removeEventListener("change", updatePreference);
   }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: frameRef,
-    offset: ["start end", "end start"],
-  });
-
-  const parallaxY = useTransform(scrollYProgress, [0, 1], ["-3.5%", "3.5%"]);
 
   const handleClick = () => {
     if (buttonRef.current) {
@@ -73,26 +63,22 @@ export function GalleryPlate({
         type="button"
         onClick={handleClick}
         aria-label={`Open full-screen view: ${item.alt}`}
-        className="group relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden bg-[#111111] p-0 text-left outline-none ring-1 ring-inset ring-white/[0.08] transition-[box-shadow,ring-color,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:ring-white/[0.2] hover:shadow-[0_28px_80px_-24px_rgba(255,255,255,0.1)] focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black sm:aspect-[16/10]"
+        className="group relative block w-full cursor-zoom-in overflow-hidden bg-[#111111] p-0 text-left outline-none ring-1 ring-inset ring-white/[0.08] transition-[box-shadow,ring-color,transform] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] hover:ring-white/[0.2] hover:shadow-[0_28px_80px_-24px_rgba(255,255,255,0.1)] focus-visible:ring-2 focus-visible:ring-white/80 focus-visible:ring-offset-4 focus-visible:ring-offset-black"
       >
-        <div ref={frameRef} className="relative h-full w-full overflow-hidden">
-          <motion.div
-            style={prefersReducedMotion ? undefined : { y: parallaxY }}
-            className={`relative h-full w-full will-change-transform ${
-              prefersReducedMotion ? "" : "scale-[1.08]"
-            }`}
-          >
-            <div className="relative h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:scale-[1.024] group-focus-visible:scale-[1.02]">
+        <div className="relative w-full overflow-hidden">
+          <motion.div className="relative h-auto w-full">
+            <div className="relative w-full">
               <Image
                 src={item.src}
                 alt={item.alt}
-                fill
+                width={item.src.width}
+                height={item.src.height}
                 priority={priority}
                 fetchPriority={priority ? "high" : undefined}
                 placeholder="blur"
                 sizes={item.sizes}
                 quality={90}
-                className="object-cover object-center select-none"
+                className="block h-auto w-full select-none"
                 draggable={false}
               />
             </div>

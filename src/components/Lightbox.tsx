@@ -257,7 +257,7 @@ export function Lightbox({
                     placeholder="blur"
                     quality={90}
                     sizes="(max-width: 640px) 92vw, (max-width: 1440px) 80vw, 1200px"
-                    className="pointer-events-none object-cover select-none"
+                    className="pointer-events-none object-contain select-none"
                     draggable={false}
                   />
                 </div>
